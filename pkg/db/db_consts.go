@@ -15,7 +15,7 @@ const (
 	// MinimalComplianceTable table name of minimal policy compliance status.
 	MinimalComplianceTable = "aggregated_compliance"
 	// ClusterDeploymentTable
-	ClusterDeploymentTable = "clusterdeployment"
+	ClusterDeploymentTable = "clusterdeployments"
 )
 
 // default values.

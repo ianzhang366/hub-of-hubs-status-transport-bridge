@@ -27,7 +27,7 @@ func NewClusterdeploymentStatusDBSyncer(log logr.Logger) DBSyncer {
 		createBundleFunc: func() bundle.Bundle { return bundle.NewClusterdeploymentsStatusBundle() },
 	}
 
-	log.Info("initialized managed clusters db syncer")
+	log.Info(fmt.Sprintf("initialized %s db syncer", db.ClusterDeploymentTable))
 
 	return dbSyncer
 }
@@ -41,7 +41,7 @@ type ClusterdeploymentStatusDBSyncer struct {
 // RegisterCreateBundleFunctions registers create bundle functions within the transport instance.
 func (syncer *ClusterdeploymentStatusDBSyncer) RegisterCreateBundleFunctions(transportInstance transport.Transport) {
 	transportInstance.Register(&transport.BundleRegistration{
-		MsgID:            ClusterDeploymentMsgKey,
+		MsgID:            db.ClusterDeploymentTable,
 		CreateBundleFunc: syncer.createBundleFunc,
 		Predicate:        func() bool { return true }, // always get managed clusters bundles
 	})
@@ -56,7 +56,7 @@ func (syncer *ClusterdeploymentStatusDBSyncer) RegisterCreateBundleFunctions(tra
 // and if the object was changed, update the db with the current object.
 func (syncer *ClusterdeploymentStatusDBSyncer) RegisterBundleHandlerFunctions(conflationManager *conflator.ConflationManager) {
 	conflationManager.Register(conflator.NewConflationRegistration(
-		conflator.ManagedClustersPriority,
+		conflator.ClusterDeploymentPriority,
 		helpers.GetBundleType(syncer.createBundleFunc()),
 		func(ctx context.Context, bundle bundle.Bundle, dbClient db.StatusTransportBridgeDB) error {
 			return syncer.handleBundle(ctx, bundle, dbClient)

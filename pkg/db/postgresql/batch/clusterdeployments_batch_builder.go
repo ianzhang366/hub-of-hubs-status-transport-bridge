@@ -27,7 +27,7 @@ func NewClusterDeploymentBatchBuilder(schema string, tableName string, leafHubNa
 	return builder
 }
 
-// ManagedClustersBatchBuilder is the PostgreSQL implementation of the ManagedClustersBatchBuilder interface.
+// ClusterDeploymentBatchBuilder is the PostgreSQL implementation of the ManagedClustersBatchBuilder interface.
 type ClusterDeploymentBatchBuilder struct {
 	*baseBatchBuilder
 }

@@ -34,7 +34,6 @@ func newConflationUnit(log logr.Logger, readyQueue *ConflationReadyQueue,
 	registrations []*ConflationRegistration) *ConflationUnit {
 	priorityQueue := make([]*conflationElement, len(registrations))
 	bundleTypeToPriority := make(map[string]conflationPriority)
-
 	for _, registration := range registrations {
 		priorityQueue[registration.priority] = &conflationElement{
 			bundleType:                    registration.bundleType,
@@ -148,6 +147,7 @@ func (cu *ConflationUnit) ReportResult(metadata *BundleMetadata, err error) {
 
 func (cu *ConflationUnit) isInProcess() bool {
 	for _, conflationElement := range cu.priorityQueue {
+
 		if conflationElement.isInProcess {
 			return true // if any bundle is in process than conflation unit is in process
 		}

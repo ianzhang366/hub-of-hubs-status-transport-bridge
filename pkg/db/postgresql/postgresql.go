@@ -115,7 +115,7 @@ func (p *PostgreSQL) GetManagedClustersByLeafHub(ctx context.Context, schema str
 
 // NewManagedClustersBatchBuilder creates a new instance of ManagedClustersBatchBuilder.
 func (p *PostgreSQL) NewClusterDeploymentBatchBuilder(schema string, tableName string,
-	leafHubName string) db.ManagedClustersBatchBuilder {
+	leafHubName string) db.ClusterDeploymentBatchBuilder {
 	return batch.NewClusterDeploymentBatchBuilder(schema, tableName, leafHubName)
 }
 
