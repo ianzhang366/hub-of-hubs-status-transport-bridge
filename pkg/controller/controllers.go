@@ -46,6 +46,7 @@ func Setup(mgr ctrl.Manager, dbWorkerPool *workerpool.DBWorkerPool, conflationMa
 	dbSyncers := []dbsyncer.DBSyncer{
 		dbsyncer.NewManagedClustersDBSyncer(ctrl.Log.WithName("managed clusters db syncer")),
 		dbsyncer.NewPoliciesDBSyncer(ctrl.Log.WithName("policies db syncer"), config),
+		dbsyncer.NewClusterdeploymentStatusDBSyncer(ctrl.Log.WithName("clusterdeployment status db syncer")),
 	}
 
 	for _, dbsyncerObj := range dbSyncers {

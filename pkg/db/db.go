@@ -14,6 +14,7 @@ type StatusTransportBridgeDB interface {
 	ManagedClustersStatusDB
 	PoliciesStatusDB
 	AggregatedPoliciesStatusDB
+	ClusterDeploymentStatusDB
 }
 
 // BatchSenderDB is the db interface required for sending batch updates.
@@ -29,6 +30,16 @@ type ManagedClustersStatusDB interface {
 		leafHubName string) (map[string]string, error)
 	// NewManagedClustersBatchBuilder returns managed clusters batch builder.
 	NewManagedClustersBatchBuilder(schema string, tableName string, leafHubName string) ManagedClustersBatchBuilder
+}
+
+// ClusterDeploymentStatusDB is the db interface required by status transport bridge to manage clusterdeployment status.
+type ClusterDeploymentStatusDB interface {
+	BatchSenderDB
+	// GetManagedClustersByLeafHub returns a map from of clusterName to its resourceVersion.
+	GetClusterDeploymentByLeafHub(ctx context.Context, schema string, tableName string,
+		leafHubName string) (map[string]string, error)
+	// NewManagedClustersBatchBuilder returns managed clusters batch builder.
+	NewClusterDeploymentBatchBuilder(schema string, tableName string, leafHubName string) ClusterDeploymentBatchBuilder
 }
 
 // PoliciesStatusDB is the db interface required by status transport bridge to manage policy status.
