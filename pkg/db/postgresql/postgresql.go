@@ -24,6 +24,8 @@ var (
 	errBatchFailed                 = errors.New("some of the batch statements failed to execute")
 )
 
+var _ db.StatusTransportBridgeDB = (*PostgreSQL)(nil)
+
 // NewPostgreSQL creates a new instance of PostgreSQL object.
 func NewPostgreSQL(ctx context.Context) (*PostgreSQL, error) {
 	databaseURL, found := os.LookupEnv(envVarDatabaseURL)
@@ -93,34 +95,6 @@ func (p *PostgreSQL) NewManagedClustersBatchBuilder(schema string, tableName str
 
 // GetManagedClustersByLeafHub returns list of managed clusters and for each managed cluster it's resourceVersion.
 func (p *PostgreSQL) GetManagedClustersByLeafHub(ctx context.Context, schema string, tableName string,
-	leafHubName string) (map[string]string, error) {
-	rows, _ := p.conn.Query(ctx, fmt.Sprintf(`SELECT payload->'metadata'->>'name',
-		payload->'metadata'->>'resourceVersion' FROM %s.%s WHERE leaf_hub_name=$1`, schema, tableName), leafHubName)
-
-	result := make(map[string]string)
-
-	for rows.Next() {
-		clusterName := ""
-		resourceVersion := ""
-
-		if err := rows.Scan(&clusterName, &resourceVersion); err != nil {
-			return nil, fmt.Errorf("error reading from table %s.%s - %w", schema, tableName, err)
-		}
-
-		result[clusterName] = resourceVersion
-	}
-
-	return result, nil
-}
-
-// NewManagedClustersBatchBuilder creates a new instance of ManagedClustersBatchBuilder.
-func (p *PostgreSQL) NewClusterDeploymentBatchBuilder(schema string, tableName string,
-	leafHubName string) db.ClusterDeploymentBatchBuilder {
-	return batch.NewClusterDeploymentBatchBuilder(schema, tableName, leafHubName)
-}
-
-// GetClusterDeploymentByLeafHub returns list of clusterdeployments and it's resourceVersion.
-func (p *PostgreSQL) GetClusterDeploymentByLeafHub(ctx context.Context, schema string, tableName string,
 	leafHubName string) (map[string]string, error) {
 	rows, _ := p.conn.Query(ctx, fmt.Sprintf(`SELECT payload->'metadata'->>'name',
 		payload->'metadata'->>'resourceVersion' FROM %s.%s WHERE leaf_hub_name=$1`, schema, tableName), leafHubName)

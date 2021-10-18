@@ -13,11 +13,11 @@ const (
 )
 
 // NewManagedClustersBatchBuilder creates a new instance of PostgreSQL ManagedClustersBatchBuilder.
-func NewClusterDeploymentBatchBuilder(schema string, tableName string, leafHubName string) *ClusterDeploymentBatchBuilder {
+func NewClusterLifecycleBatchBuilder(schema string, tableName string, leafHubName string) *ClusterlifecycleBatchBuilder {
 	tableSpecialColumns := make(map[int]string)
 	tableSpecialColumns[JsonbColumnIndex] = db.Jsonb
 
-	builder := &ClusterDeploymentBatchBuilder{
+	builder := &ClusterlifecycleBatchBuilder{
 		baseBatchBuilder: newBaseBatchBuilder(schema, tableName, tableSpecialColumns, leafHubName,
 			DeleteRowKey),
 	}
@@ -28,31 +28,31 @@ func NewClusterDeploymentBatchBuilder(schema string, tableName string, leafHubNa
 }
 
 // ClusterDeploymentBatchBuilder is the PostgreSQL implementation of the ManagedClustersBatchBuilder interface.
-type ClusterDeploymentBatchBuilder struct {
+type ClusterlifecycleBatchBuilder struct {
 	*baseBatchBuilder
 }
 
 // Insert adds the given (cluster payload, error string) to the batch to be inserted to the db.
-func (builder *ClusterDeploymentBatchBuilder) Insert(payload interface{}, errorString string) {
+func (builder *ClusterlifecycleBatchBuilder) Insert(payload interface{}, errorString string) {
 	builder.insert(builder.leafHubName, payload, errorString)
 }
 
 // Update adds the given arguments to the batch to update clusterName with the given payload in db.
-func (builder *ClusterDeploymentBatchBuilder) Update(clusterName string, payload interface{}) {
+func (builder *ClusterlifecycleBatchBuilder) Update(clusterName string, payload interface{}) {
 	builder.update(builder.leafHubName, payload, clusterName)
 }
 
 // Delete adds delete statement to the batch to delete the given cluster from db.
-func (builder *ClusterDeploymentBatchBuilder) Delete(clusterName string) {
+func (builder *ClusterlifecycleBatchBuilder) Delete(clusterName string) {
 	builder.delete(clusterName)
 }
 
 // Build builds the batch object.
-func (builder *ClusterDeploymentBatchBuilder) Build() interface{} {
+func (builder *ClusterlifecycleBatchBuilder) Build() interface{} {
 	return builder.build()
 }
 
-func (builder *ClusterDeploymentBatchBuilder) generateUpdateStatement() string {
+func (builder *ClusterlifecycleBatchBuilder) generateUpdateStatement() string {
 	var stringBuilder strings.Builder
 
 	stringBuilder.WriteString(fmt.Sprintf("UPDATE %s.%s AS old SET payload=new.payload FROM (values ",

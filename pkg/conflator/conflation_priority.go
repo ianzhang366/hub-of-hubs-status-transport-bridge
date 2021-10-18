@@ -12,3 +12,12 @@ const (
 	MinimalComplianceStatusPriority conflationPriority = iota // MinimalComplianceStatus = 3
 	ClusterDeploymentPriority       conflationPriority = iota // MinimalComplianceStatus = 4
 )
+
+func GetPriorityByName(n string) conflationPriority {
+	switch n {
+	case "clusterdeployments":
+		return ClusterDeploymentPriority
+	}
+
+	return ManagedClustersPriority
+}

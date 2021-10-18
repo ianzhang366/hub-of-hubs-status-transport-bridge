@@ -1,26 +1,26 @@
 package bundle
 
-import cdv1 "github.com/openshift/hive/apis/hive/v1"
+import "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-// NewClusterdeploymentsStatusBundle creates a new Clusterdeployments status bundle with no data in it.
-func NewClusterdeploymentsStatusBundle() *ClusterdeploymentsStatusBundle {
-	return &ClusterdeploymentsStatusBundle{}
+// NewClusterlifecycleStatusBundle creates a new Clusterlifecycle resource bundle template with no data in it.
+func NewClusterlifecycleStatusBundle() *ClusterlifecycleStatusBundle {
+	return &ClusterlifecycleStatusBundle{}
 }
 
 // ClusterdeploymentsStatusBundle abstracts management of ClusterDeployment status bundle.
-type ClusterdeploymentsStatusBundle struct {
-	Objects     []*cdv1.ClusterDeployment `json:"objects"`
-	LeafHubName string                    `json:"leafHubName"`
-	Generation  uint64                    `json:"generation"`
+type ClusterlifecycleStatusBundle struct {
+	Objects     []*unstructured.Unstructured `json:"objects"`
+	LeafHubName string                       `json:"leafHubName"`
+	Generation  uint64                       `json:"generation"`
 }
 
 // GetLeafHubName returns the leaf hub name that sent the bundle.
-func (bundle *ClusterdeploymentsStatusBundle) GetLeafHubName() string {
+func (bundle *ClusterlifecycleStatusBundle) GetLeafHubName() string {
 	return bundle.LeafHubName
 }
 
 // GetObjects returns the objects in the bundle.
-func (bundle *ClusterdeploymentsStatusBundle) GetObjects() []interface{} {
+func (bundle *ClusterlifecycleStatusBundle) GetObjects() []interface{} {
 	result := make([]interface{}, len(bundle.Objects))
 	for i, obj := range bundle.Objects {
 		result[i] = obj
@@ -30,6 +30,6 @@ func (bundle *ClusterdeploymentsStatusBundle) GetObjects() []interface{} {
 }
 
 // GetGeneration returns the bundle generation.
-func (bundle *ClusterdeploymentsStatusBundle) GetGeneration() uint64 {
+func (bundle *ClusterlifecycleStatusBundle) GetGeneration() uint64 {
 	return bundle.Generation
 }
