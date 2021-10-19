@@ -14,11 +14,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-var errObjectNotClusterdeployment = errors.New("failed to parse object in bundle to a clusterdeployment status")
-
-const (
-	ClusterDeployment = "clusterdeployments"
-)
+var errObjectNotClusterlifecycle = errors.New("failed to parse object in bundle to a clusterdeployment status")
 
 // ClusterdeploymentStatusDBSyncer implements clusterdeployment status clusters db sync business logic.
 type ClusterlifecycleStatusDBSyncer struct {
@@ -40,10 +36,21 @@ func withComponentNameAsTableName(n string) option {
 }
 
 func NewClusterdeploymentStatusDBSyncer(log logr.Logger) DBSyncer {
-	return newClusterlifecycleStatusDBSyncer(log, withComponentNameAsTableName(ClusterDeployment))
+	component := "clusterdeployments"
+	return newClusterlifecycleStatusDBSyncer(log.WithName(fmt.Sprintf("%s-status-db-syncer", component)), withComponentNameAsTableName(component))
 }
 
-// NewClusterdeploymentStatusDBSyncer creates a new instance of ClusterdeploymentStatusDBSyncer.
+func NewMachinepoolStatusDBSyncer(log logr.Logger) DBSyncer {
+	component := "machinepools"
+	return newClusterlifecycleStatusDBSyncer(log.WithName(fmt.Sprintf("%s-status-db-syncer", component)), withComponentNameAsTableName(component))
+}
+
+func NewKlusterletaddonconfigStatusDBSyncer(log logr.Logger) DBSyncer {
+	component := "klusterletaddonconfigs"
+	return newClusterlifecycleStatusDBSyncer(log.WithName(fmt.Sprintf("%s-status-db-syncer", component)), withComponentNameAsTableName(component))
+}
+
+// newClusterlifecycleStatusDBSyncer creates a new instance of ClusterlifecycleStatusDBSyncer, which is a generic dbsyncer for cluster lifecycle related resources.
 func newClusterlifecycleStatusDBSyncer(log logr.Logger, opts ...option) DBSyncer {
 	dbSyncer := &ClusterlifecycleStatusDBSyncer{
 		log:              log,
@@ -102,7 +109,7 @@ func (syncer *ClusterlifecycleStatusDBSyncer) handleBundle(ctx context.Context, 
 	for _, object := range bundle.GetObjects() {
 		ins, ok := object.(*unstructured.Unstructured)
 		if !ok {
-			syncer.log.Error(errObjectNotClusterdeployment, "skipping object...")
+			syncer.log.Error(errObjectNotClusterlifecycle, "skipping object...")
 			continue // do not handle objects other than ManagedCluster
 		}
 

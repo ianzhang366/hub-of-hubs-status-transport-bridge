@@ -11,12 +11,19 @@ const (
 	ComplianceStatusPriority        conflationPriority = iota // ComplianceStatus = 2
 	MinimalComplianceStatusPriority conflationPriority = iota // MinimalComplianceStatus = 3
 	ClusterDeploymentPriority       conflationPriority = iota // MinimalComplianceStatus = 4
+	MachinepoolPriority             conflationPriority = iota // MinimalComplianceStatus = 5
+	KlusterletaddonconfigPriority   conflationPriority = iota // MinimalComplianceStatus = 6
 )
 
+// ../dbsyncer/clusterlifecycle_transport_to_db_syncer.go:38,51
 func GetPriorityByName(n string) conflationPriority {
 	switch n {
 	case "clusterdeployments":
 		return ClusterDeploymentPriority
+	case "machinepools":
+		return MachinepoolPriority
+	case "klusterletaddonconfigs":
+		return KlusterletaddonconfigPriority
 	}
 
 	return ManagedClustersPriority

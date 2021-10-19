@@ -44,9 +44,11 @@ func Setup(mgr ctrl.Manager, dbWorkerPool *workerpool.DBWorkerPool, conflationMa
 	}
 	// register db syncers create bundle functions within transport and handler functions within dispatcher
 	dbSyncers := []dbsyncer.DBSyncer{
-		dbsyncer.NewManagedClustersDBSyncer(ctrl.Log.WithName("managed clusters db syncer")),
-		dbsyncer.NewPoliciesDBSyncer(ctrl.Log.WithName("policies db syncer"), config),
-		dbsyncer.NewClusterdeploymentStatusDBSyncer(ctrl.Log.WithName("clusterdeployment-status-db-syncer")),
+		dbsyncer.NewManagedClustersDBSyncer(ctrl.Log.WithName("managed-clusters-db-syncer")),
+		dbsyncer.NewPoliciesDBSyncer(ctrl.Log.WithName("policies-db-syncer"), config),
+		dbsyncer.NewClusterdeploymentStatusDBSyncer(ctrl.Log),
+		dbsyncer.NewMachinepoolStatusDBSyncer(ctrl.Log),
+		dbsyncer.NewKlusterletaddonconfigStatusDBSyncer(ctrl.Log),
 	}
 
 	for _, dbsyncerObj := range dbSyncers {
